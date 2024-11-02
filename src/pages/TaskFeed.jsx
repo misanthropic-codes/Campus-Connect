@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { collection, query, orderBy, onSnapshot, updateDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
@@ -14,22 +14,30 @@ const TaskFeed = () => {
   });
 
   useEffect(() => {
-    // Query all tasks regardless of status
-    const q = query(
-      collection(db, 'tasks'),
-      orderBy('createdAt', 'desc')
-    );
+    const q = query(collection(db, 'tasks'), orderBy('createdAt', 'desc'));
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const tasksData = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       }));
+      console.log("Fetched tasks:", tasksData);
       setTasks(tasksData);
     });
 
     return () => unsubscribe();
   }, []);
+
+  const filteredTasks = useMemo(() => {
+    return tasks.filter(task => {
+      return (
+        (!filters.location || task.location === filters.location) &&
+        (!filters.urgency || task.urgency === filters.urgency) &&
+        task.status === 'open' && 
+        task.createdBy !== currentUser.uid
+      );
+    });
+  }, [tasks, filters, currentUser.uid]);
 
   const handleAcceptTask = async (taskId) => {
     try {
@@ -56,15 +64,6 @@ const TaskFeed = () => {
     }
   };
 
-  const filteredTasks = tasks.filter(task => {
-    return (
-      (!filters.location || task.location === filters.location) &&
-      (!filters.urgency || task.urgency === filters.urgency) &&
-      task.status === 'open' && // Only show open tasks
-      task.createdBy !== currentUser.uid // Don't show user's own tasks
-    );
-  });
-
   return (
     <div className="container mx-auto px-4 py-8">
       <motion.div
@@ -74,7 +73,6 @@ const TaskFeed = () => {
       >
         <h1 className="text-3xl font-bold mb-6">Task Feed</h1>
 
-        {/* Filters */}
         <div className="flex gap-4 mb-6">
           <select
             className="p-2 border rounded"
@@ -100,7 +98,6 @@ const TaskFeed = () => {
           </select>
         </div>
 
-        {/* Task Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredTasks.map(task => (
             <motion.div
