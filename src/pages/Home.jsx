@@ -55,6 +55,7 @@ const FeatureCard = ({ icon: Icon, title, description, delay }) => (
     transition={{ duration: 0.6, delay }}
     viewport={{ once: true }}
     className="group p-6 bg-gradient-to-br from-gray-900/50 to-gray-800/30 rounded-xl border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300"
+    
   >
     <div className="flex flex-col h-full">
       <div className="flex items-center gap-4 mb-4">
@@ -174,10 +175,30 @@ const Home = () => {
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-xl blur-3xl"></div>
               <div className="relative grid grid-cols-2 gap-4">
+                <motion.div className="div"
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: "spring", stiffness: 500, damping: 25 }}  >
                 <StatCard value="Task" label="Realtime Updates" delay={0.2} />
+                </motion.div>
+                <motion.div className="div"
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 500, damping: 25 }}>
                 <StatCard value="Collaborate" label="Effectively" delay={0.4} />
+                </motion.div>
+                <motion.div className="div"
+                 whileHover={{ scale: 1.04 }}
+                 whileTap={{ scale: 0.98 }}
+                 transition={{ type: "spring", stiffness: 500, damping: 25 }}>
                 <StatCard value="Build" label="Network" delay={0.6} />
+                </motion.div>
+                <motion.div className="div"
+                 whileHover={{ scale: 1.04 }}
+                 whileTap={{ scale: 0.98 }}
+                 transition={{ type: "spring", stiffness: 500, damping: 25 }}>
                 <StatCard value="Showcase" label="Skills" delay={0.8} />
+                </motion.div>
               </div>
             </div>
           </div>

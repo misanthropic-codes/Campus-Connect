@@ -72,7 +72,7 @@ const Login = () => {
         <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-xl border border-white/20">
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold text-white mb-2">Welcome Back</h1>
-            <p className="text-blue-200">Sign in to continue to Campus Taskboard</p>
+            <p className="text-blue-200">Sign in to continue to Campus Connect</p>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -116,7 +116,7 @@ const Login = () => {
                     }
                   })}
                   type="password"
-                  className="w-full bg-white/5 border border-blue-300/30 rounded-lg px-10 py-3 text-white placeholder-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                  className="w-full bg-white/5 border border-blue-300/30 rounded-lg px-10 py-3 text-white placeholder-white-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
                   placeholder="Enter your password"
                   disabled={isLoading}
                 />
