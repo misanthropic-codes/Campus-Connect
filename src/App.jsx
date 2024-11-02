@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
 import TaskDetails from './pages/TaskDetails';
+import TaskFeed from './pages/TaskFeed';
 import CreateTask from './pages/CreateTask';
 import Profile from './pages/Profile';
 import { Toaster } from "react-hot-toast";
@@ -27,6 +28,7 @@ const App = () => {
           <Navbar />
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/task-feed" element={<TaskFeed />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/dashboard" element={

@@ -1,20 +1,19 @@
-// src/firebase.js
+
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-    apiKey: "AIzaSyCBKS_qTL8Lifxp549b7cfYRSxm9Jaj9bA",
-    authDomain: "c-taskboard.firebaseapp.com",
-    databaseURL: "https://c-taskboard-default-rtdb.firebaseio.com",
-    projectId: "c-taskboard",
-    storageBucket: "c-taskboard.firebasestorage.app",
-    messagingSenderId: "1068269422250",
-    appId: "1:1068269422250:web:a4c9300e2be3a708f432d3",
-    measurementId: "G-S4PSWJMNMK"
-
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+export default app;
