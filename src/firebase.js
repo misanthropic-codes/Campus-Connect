@@ -6,6 +6,7 @@ import { getFirestore } from 'firebase/firestore';
 const firebaseConfig = {
     apiKey: "AIzaSyCBKS_qTL8Lifxp549b7cfYRSxm9Jaj9bA",
     authDomain: "c-taskboard.firebaseapp.com",
+    databaseURL: "https://c-taskboard-default-rtdb.firebaseio.com",
     projectId: "c-taskboard",
     storageBucket: "c-taskboard.firebasestorage.app",
     messagingSenderId: "1068269422250",
