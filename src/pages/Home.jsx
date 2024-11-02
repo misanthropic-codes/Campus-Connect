@@ -120,10 +120,10 @@ const Home = () => {
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-xl blur-3xl"></div>
               <div className="relative grid grid-cols-2 gap-4">
-                <StatCard value="10K+" label="Active Users" />
-                <StatCard value="50K+" label="Tasks Completed" />
-                <StatCard value="95%" label="Success Rate" />
-                <StatCard value="24/7" label="Support" />
+                <StatCard value="Task" label="Realtime Updates" />
+                <StatCard value="Collaborate " label="Effectively" />
+                <StatCard value="Build" label="Network" />
+                <StatCard value="Showcase" label="Skills" />
               </div>
             </div>
           </div>
