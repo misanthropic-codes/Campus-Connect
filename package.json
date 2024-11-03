@@ -13,7 +13,12 @@
     "@firebasegen/default-connector": "file:dataconnect-generated/js/default-connector",
     "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.1.5",
+    "@radix-ui/react-dialog": "^1.1.2",
     "@tailwindcss/forms": "^0.5.9",
+    "add": "^2.0.6",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "dialog": "^0.3.1",
     "dotenv": "^16.4.5",
     "firebase": "^11.0.1",
     "framer-motion": "^11.11.11",
@@ -23,10 +28,13 @@
     "react-hook-form": "^7.53.1",
     "react-hot-toast": "^2.4.1",
     "react-router-dom": "^6.27.0",
-    "react-toastify": "^10.0.6"
+    "react-toastify": "^10.0.6",
+    "shadcn-ui": "^0.9.2",
+    "tailwind-merge": "^2.5.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",
+    "@shadcn/ui": "^0.0.4",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.3",

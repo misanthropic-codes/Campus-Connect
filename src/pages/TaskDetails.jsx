@@ -116,6 +116,10 @@ const TaskDetails = () => {
     }
   };
 
+  const navigateToProfile = (userId) => {
+    navigate(`/profile/${userId}`);
+  };
+
   if (!task) return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-indigo-900 to-purple-900">
       <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-300"></div>
@@ -123,7 +127,7 @@ const TaskDetails = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-indigo-900 to-purple-900 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-b from-indigo-900 to-purple-900 py-4 sm:py-8 px-2 sm:px-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -134,26 +138,26 @@ const TaskDetails = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="bg-slate-800/50 backdrop-blur-sm rounded-xl shadow-xl p-6 mb-6"
+          className="bg-slate-800/50 backdrop-blur-sm rounded-xl shadow-xl p-4 sm:p-6 mb-4 sm:mb-6"
         >
-          <h1 className="text-3xl font-bold mb-4 text-blue-300">{task.title}</h1>
-          <p className="text-gray-300 mb-6">{task.description}</p>
+          <h1 className="text-2xl sm:text-3xl font-bold mb-3 sm:mb-4 text-blue-300">{task.title}</h1>
+          <p className="text-sm sm:text-base text-gray-300 mb-4 sm:mb-6">{task.description}</p>
 
-          <div className="flex flex-wrap gap-4 mb-6">
-            <div className="flex items-center gap-2 bg-slate-700/50 px-4 py-2 rounded-lg">
-              <MapPin className="w-4 h-4 text-blue-300" />
+          <div className="flex flex-wrap gap-2 sm:gap-4 mb-4 sm:mb-6">
+            <div className="flex items-center gap-2 bg-slate-700/50 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-sm">
+              <MapPin className="w-3 h-3 sm:w-4 sm:h-4 text-blue-300" />
               <span className="text-gray-200">{task.location}</span>
             </div>
-            <div className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
+            <div className={`flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-sm ${
               task.urgency === 'high' ? 'bg-red-900/50 text-red-300' :
               task.urgency === 'medium' ? 'bg-yellow-900/50 text-yellow-300' :
               'bg-green-900/50 text-green-300'
             }`}>
-              <AlertTriangle className="w-4 h-4" />
+              <AlertTriangle className="w-3 h-3 sm:w-4 sm:h-4" />
               <span>{task.urgency.charAt(0).toUpperCase() + task.urgency.slice(1)}</span>
             </div>
-            <div className="flex items-center gap-2 bg-slate-700/50 px-4 py-2 rounded-lg">
-              <Clock className="w-4 h-4 text-blue-300" />
+            <div className="flex items-center gap-2 bg-slate-700/50 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg text-sm">
+              <Clock className="w-3 h-3 sm:w-4 sm:h-4 text-blue-300" />
               <span className="text-gray-200">
                 Posted {new Date(task.createdAt).toLocaleDateString()}
               </span>
@@ -161,15 +165,20 @@ const TaskDetails = () => {
           </div>
 
           {poster && (
-            <div className="flex items-center gap-4 mb-6 bg-slate-700/30 p-4 rounded-lg">
-              <div className="w-12 h-12 bg-blue-500/30 rounded-full flex items-center justify-center">
-                <User className="w-6 h-6 text-blue-300" />
+            <motion.div 
+              onClick={() => navigateToProfile(task.createdBy)}
+              className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6 bg-slate-700/30 p-3 sm:p-4 rounded-lg cursor-pointer hover:bg-slate-700/40 transition-colors"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-500/30 rounded-full flex items-center justify-center">
+                <User className="w-5 h-5 sm:w-6 sm:h-6 text-blue-300" />
               </div>
               <div>
                 <p className="font-medium text-blue-300">{poster.displayName}</p>
-                <p className="text-sm text-gray-400">Task Creator</p>
+                <p className="text-xs sm:text-sm text-gray-400">Task Creator • Click to view profile</p>
               </div>
-            </div>
+            </motion.div>
           )}
 
           {task.status === 'open' && currentUser.uid !== task.createdBy && (
@@ -177,17 +186,17 @@ const TaskDetails = () => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="flex gap-4 mb-6"
+              className="flex gap-2 sm:gap-4 mb-4 sm:mb-6"
             >
               <button
                 onClick={handleAcceptTask}
-                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg transition-colors"
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 sm:py-3 rounded-lg transition-colors text-sm sm:text-base"
               >
                 Accept Task
               </button>
               <button
                 onClick={handleRejectTask}
-                className="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg transition-colors"
+                className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 sm:py-3 rounded-lg transition-colors text-sm sm:text-base"
               >
                 Reject Task
               </button>
@@ -200,7 +209,7 @@ const TaskDetails = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
               onClick={handleMarkComplete}
-              className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg transition-colors mb-6"
+              className="w-full bg-green-600 hover:bg-green-700 text-white py-2 sm:py-3 rounded-lg transition-colors mb-4 sm:mb-6 text-sm sm:text-base"
             >
               Mark as Complete
             </motion.button>
@@ -210,45 +219,45 @@ const TaskDetails = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="bg-slate-800/50 rounded-lg p-6"
+            className="bg-slate-800/50 rounded-lg p-3 sm:p-6"
           >
-            <h3 className="text-xl font-semibold mb-4 text-blue-300">Messages</h3>
-            <div className="space-y-4 mb-4 max-h-96 overflow-y-auto">
+            <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-blue-300">Messages</h3>
+            <div className="space-y-3 sm:space-y-4 mb-4 max-h-72 sm:max-h-96 overflow-y-auto">
               {messages.map((message) => (
                 <motion.div
                   initial={{ opacity: 0, x: message.senderId === currentUser.uid ? 20 : -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3 }}
                   key={message.id}
-                  className={`p-4 rounded-lg ${
+                  className={`p-3 sm:p-4 rounded-lg ${
                     message.senderId === currentUser.uid
                       ? 'bg-blue-600/30 ml-auto'
                       : 'bg-slate-700/30'
-                  } max-w-[80%]`}
+                  } max-w-[85%] sm:max-w-[80%]`}
                 >
-                  <p className="text-sm font-medium text-blue-300">{message.senderName}</p>
-                  <p className="text-gray-200 mt-1">{message.content}</p>
-                  <p className="text-xs text-gray-400 mt-2">
+                  <p className="text-xs sm:text-sm font-medium text-blue-300">{message.senderName}</p>
+                  <p className="text-sm sm:text-base text-gray-200 mt-1">{message.content}</p>
+                  <p className="text-xs text-gray-400 mt-1 sm:mt-2">
                     {new Date(message.createdAt).toLocaleTimeString()}
                   </p>
                 </motion.div>
               ))}
             </div>
 
-            <form onSubmit={handleSendMessage} className="flex gap-3">
+            <form onSubmit={handleSendMessage} className="flex gap-2 sm:gap-3">
               <input
                 type="text"
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
-                className="flex-1 bg-slate-700/30 text-gray-200 p-3 rounded-lg border border-slate-600 focus:outline-none focus:border-blue-500 transition-colors"
+                className="flex-1 bg-slate-700/30 text-gray-200 p-2 sm:p-3 rounded-lg border border-slate-600 focus:outline-none focus:border-blue-500 transition-colors text-sm sm:text-base"
                 placeholder="Type your message..."
               />
               <button
                 type="submit"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 rounded-lg flex items-center gap-2 transition-colors"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 sm:px-6 rounded-lg flex items-center gap-2 transition-colors text-sm sm:text-base whitespace-nowrap"
               >
-                <Send className="w-4 h-4" />
-                Send
+                <Send className="w-3 h-3 sm:w-4 sm:h-4" />
+                <span className="hidden sm:inline">Send</span>
               </button>
             </form>
           </motion.div>

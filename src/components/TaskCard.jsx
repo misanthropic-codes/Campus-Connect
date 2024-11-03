@@ -11,9 +11,9 @@ const TaskCard = ({ task }) => {
   };
 
   const urgencyIcons = {
-    low: <AlertTriangle className="w-4 h-4 text-green-400" />,
-    medium: <AlertTriangle className="w-4 h-4 text-yellow-400" />,
-    high: <AlertTriangle className="w-4 h-4 text-red-400" />
+    low: <AlertTriangle className="w-3 h-3 sm:w-4 sm:h-4 text-green-400" />,
+    medium: <AlertTriangle className="w-3 h-3 sm:w-4 sm:h-4 text-yellow-400" />,
+    high: <AlertTriangle className="w-3 h-3 sm:w-4 sm:h-4 text-red-400" />
   };
 
   const statusColors = {
@@ -27,47 +27,47 @@ const TaskCard = ({ task }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ scale: 1.02 }}
-      className="overflow-hidden"
+      className="overflow-hidden w-full"
     >
-      <Link to={`/task/${task.id}`} className="block p-6">
-        <div className="space-y-4">
+      <Link to={`/task/${task.id}`} className="block p-3 sm:p-6">
+        <div className="space-y-3 sm:space-y-4">
           {/* Title */}
-          <h3 className="text-xl font-semibold text-gray-100 truncate">
+          <h3 className="text-lg sm:text-xl font-semibold text-gray-100 truncate">
             {task.title}
           </h3>
 
           {/* Description */}
-          <p className="text-gray-400 line-clamp-2 text-sm">
+          <p className="text-gray-400 line-clamp-2 text-xs sm:text-sm">
             {task.description}
           </p>
 
           {/* Tags */}
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1.5 sm:gap-2">
             {/* Location Tag */}
-            <div className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-gray-300 text-sm">
-              <MapPin className="w-4 h-4" />
+            <div className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-0.5 sm:py-1 rounded-lg bg-white/5 border border-white/10 text-gray-300 text-xs sm:text-sm">
+              <MapPin className="w-3 h-3 sm:w-4 sm:h-4" />
               {task.location}
             </div>
 
             {/* Urgency Tag */}
-            <div className={`flex items-center gap-1.5 px-3 py-1 rounded-lg border ${urgencyColors[task.urgency]}`}>
+            <div className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-0.5 sm:py-1 rounded-lg border ${urgencyColors[task.urgency]}`}>
               {urgencyIcons[task.urgency]}
-              <span className="text-sm">
+              <span className="text-xs sm:text-sm">
                 {task.urgency.charAt(0).toUpperCase() + task.urgency.slice(1)}
               </span>
             </div>
 
             {/* Status Tag */}
-            <div className={`flex items-center gap-1.5 px-3 py-1 rounded-lg border ${statusColors[task.status]}`}>
-              <span className="text-sm">
+            <div className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-0.5 sm:py-1 rounded-lg border ${statusColors[task.status]}`}>
+              <span className="text-xs sm:text-sm">
                 {task.status.charAt(0).toUpperCase() + task.status.slice(1)}
               </span>
             </div>
           </div>
 
           {/* Footer */}
-          <div className="flex items-center gap-2 text-sm text-gray-400">
-            <Clock className="w-4 h-4" />
+          <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-gray-400">
+            <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
             <span>
               Posted {new Date(task.createdAt).toLocaleDateString()}
             </span>
