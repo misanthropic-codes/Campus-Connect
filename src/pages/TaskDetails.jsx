@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { motion } from 'framer-motion';
+import { Clock, MapPin, AlertTriangle, Send, User } from 'lucide-react';
 
 const TaskDetails = () => {
   const { id } = useParams();
@@ -24,12 +25,10 @@ const TaskDetails = () => {
       if (docSnap.exists()) {
         setTask({ id: docSnap.id, ...docSnap.data() });
 
-        // Fetch poster details
         const posterRef = doc(db, 'users', docSnap.data().createdBy);
         const posterSnap = await getDoc(posterRef);
         setPoster(posterSnap.data());
 
-        // Fetch claimant details if exists
         if (docSnap.data().claimedBy) {
           const claimantRef = doc(db, 'users', docSnap.data().claimedBy);
           const claimantSnap = await getDoc(claimantRef);
@@ -40,7 +39,6 @@ const TaskDetails = () => {
 
     fetchTask();
 
-    // Subscribe to messages
     const q = collection(db, `tasks/${id}/messages`);
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const messagesData = snapshot.docs
@@ -59,7 +57,6 @@ const TaskDetails = () => {
         claimedBy: currentUser.uid,
         status: 'accepted'
       });
-
       toast.success("Task accepted successfully!");
     } catch (error) {
       toast.error("Failed to accept task. Please try again.");
@@ -73,7 +70,6 @@ const TaskDetails = () => {
         claimedBy: null,
         status: 'open'
       });
-
       toast.info("Task rejected.");
     } catch (error) {
       toast.error("Failed to reject task. Please try again.");
@@ -88,7 +84,6 @@ const TaskDetails = () => {
         completedAt: new Date().toISOString()
       });
 
-      // Update helper's score
       const helperRef = doc(db, 'users', task.claimedBy);
       const helperSnap = await getDoc(helperRef);
       const currentScore = helperSnap.data().helpfulnessScore || 0;
@@ -121,112 +116,143 @@ const TaskDetails = () => {
     }
   };
 
-  if (!task) return <div>Loading...</div>;
+  if (!task) return (
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-indigo-900 to-purple-900">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-300"></div>
+    </div>
+  );
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gradient-to-b from-indigo-900 to-purple-900 py-8 px-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white rounded-lg shadow-md p-6"
+        transition={{ duration: 0.5 }}
+        className="max-w-4xl mx-auto"
       >
-        <h1 className="text-3xl font-bold mb-4">{task.title}</h1>
-        <div className="mb-6">
-          <p className="text-gray-600">{task.description}</p>
-          <div className="mt-4 flex gap-4">
-            <span className="bg-gray-100 px-3 py-1 rounded-full">
-              {task.location}
-            </span>
-            <span className={`px-3 py-1 rounded-full ${
-              task.urgency === 'high' ? 'bg-red-100 text-red-800' :
-              task.urgency === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-              'bg-green-100 text-green-800'
-            }`}>
-              {task.urgency.charAt(0).toUpperCase() + task.urgency.slice(1)}
-            </span>
-          </div>
-        </div>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="bg-slate-800/50 backdrop-blur-sm rounded-xl shadow-xl p-6 mb-6"
+        >
+          <h1 className="text-3xl font-bold mb-4 text-blue-300">{task.title}</h1>
+          <p className="text-gray-300 mb-6">{task.description}</p>
 
-        <div className="mb-6">
-          <h3 className="text-lg font-semibold mb-2">Posted by</h3>
+          <div className="flex flex-wrap gap-4 mb-6">
+            <div className="flex items-center gap-2 bg-slate-700/50 px-4 py-2 rounded-lg">
+              <MapPin className="w-4 h-4 text-blue-300" />
+              <span className="text-gray-200">{task.location}</span>
+            </div>
+            <div className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
+              task.urgency === 'high' ? 'bg-red-900/50 text-red-300' :
+              task.urgency === 'medium' ? 'bg-yellow-900/50 text-yellow-300' :
+              'bg-green-900/50 text-green-300'
+            }`}>
+              <AlertTriangle className="w-4 h-4" />
+              <span>{task.urgency.charAt(0).toUpperCase() + task.urgency.slice(1)}</span>
+            </div>
+            <div className="flex items-center gap-2 bg-slate-700/50 px-4 py-2 rounded-lg">
+              <Clock className="w-4 h-4 text-blue-300" />
+              <span className="text-gray-200">
+                Posted {new Date(task.createdAt).toLocaleDateString()}
+              </span>
+            </div>
+          </div>
+
           {poster && (
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                {poster.displayName?.charAt(0)}
+            <div className="flex items-center gap-4 mb-6 bg-slate-700/30 p-4 rounded-lg">
+              <div className="w-12 h-12 bg-blue-500/30 rounded-full flex items-center justify-center">
+                <User className="w-6 h-6 text-blue-300" />
               </div>
               <div>
-                <p className="font-medium">{poster.displayName}</p>
-                <p className="text-sm text-gray-500">
-                  Posted on {new Date(task.createdAt).toLocaleDateString()}
-                </p>
+                <p className="font-medium text-blue-300">{poster.displayName}</p>
+                <p className="text-sm text-gray-400">Task Creator</p>
               </div>
             </div>
           )}
-        </div>
 
-        {task.status === 'open' && currentUser.uid !== task.createdBy && (
-          <>
-            <button
-              onClick={handleAcceptTask}
-              className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 mb-2"
+          {task.status === 'open' && currentUser.uid !== task.createdBy && (
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="flex gap-4 mb-6"
             >
-              Accept Task
-            </button>
-            <button
-              onClick={handleRejectTask}
-              className="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700"
-            >
-              Reject Task
-            </button>
-          </>
-        )}
-
-        {task.status === 'accepted' && task.createdBy === currentUser.uid && (
-          <button
-            onClick={handleMarkComplete}
-            className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 mb-6"
-          >
-            Mark as Complete
-          </button>
-        )}
-
-        <div className="mt-8">
-          <h3 className="text-lg font-semibold mb-4">Messages</h3>
-          <div className="space-y-4 mb-4 max-h-96 overflow-y-auto">
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={`p-3 rounded-lg ${
-                  message.senderId === currentUser.uid
-                    ? 'bg-blue-100 ml-auto'
-                    : 'bg-gray-100'
-                } max-w-[80%]`}
+              <button
+                onClick={handleAcceptTask}
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg transition-colors"
               >
-                <p className="text-sm font-medium">{message.senderName}</p>
-                <p>{message.content}</p>
-                <p className="text-xs text-gray-500">
-                  {new Date(message.createdAt).toLocaleTimeString()}
-                </p>
-              </div>
-            ))}
-          </div>
+                Accept Task
+              </button>
+              <button
+                onClick={handleRejectTask}
+                className="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg transition-colors"
+              >
+                Reject Task
+              </button>
+            </motion.div>
+          )}
 
-          <form onSubmit={handleSendMessage} className="flex gap-2">
-            <input
-              type="text"
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              className="flex-1 p-2 border rounded"
-              placeholder="Type your message..."
-            />
-            <button
-              type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          {task.status === 'accepted' && task.createdBy === currentUser.uid && (
+            <motion.button
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              onClick={handleMarkComplete}
+              className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg transition-colors mb-6"
             >
-              Send
-            </button>
-          </form>
-        </div>
+              Mark as Complete
+            </motion.button>
+          )}
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="bg-slate-800/50 rounded-lg p-6"
+          >
+            <h3 className="text-xl font-semibold mb-4 text-blue-300">Messages</h3>
+            <div className="space-y-4 mb-4 max-h-96 overflow-y-auto">
+              {messages.map((message) => (
+                <motion.div
+                  initial={{ opacity: 0, x: message.senderId === currentUser.uid ? 20 : -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3 }}
+                  key={message.id}
+                  className={`p-4 rounded-lg ${
+                    message.senderId === currentUser.uid
+                      ? 'bg-blue-600/30 ml-auto'
+                      : 'bg-slate-700/30'
+                  } max-w-[80%]`}
+                >
+                  <p className="text-sm font-medium text-blue-300">{message.senderName}</p>
+                  <p className="text-gray-200 mt-1">{message.content}</p>
+                  <p className="text-xs text-gray-400 mt-2">
+                    {new Date(message.createdAt).toLocaleTimeString()}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
+
+            <form onSubmit={handleSendMessage} className="flex gap-3">
+              <input
+                type="text"
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                className="flex-1 bg-slate-700/30 text-gray-200 p-3 rounded-lg border border-slate-600 focus:outline-none focus:border-blue-500 transition-colors"
+                placeholder="Type your message..."
+              />
+              <button
+                type="submit"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 rounded-lg flex items-center gap-2 transition-colors"
+              >
+                <Send className="w-4 h-4" />
+                Send
+              </button>
+            </form>
+          </motion.div>
+        </motion.div>
       </motion.div>
     </div>
   );
