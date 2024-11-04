@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import { doc, getDoc, collection, query, where, getDocs, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
 import TaskCard from '../components/TaskCard';
-import { motion, useSpring } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { toast } from "react-toastify";
-import { Github, Linkedin, MapPin, GraduationCap, Building2, Mail, Calendar } from 'lucide-react';
+import { Github, Linkedin, MapPin, GraduationCap, Building2, Calendar, Edit2, X } from 'lucide-react';
 
 const Profile = () => {
   const { id } = useParams();
@@ -15,6 +15,16 @@ const Profile = () => {
   const [tasks, setTasks] = useState([]);
   const [completedTasks, setCompletedTasks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editForm, setEditForm] = useState({
+    displayName: '',
+    major: '',
+    year: '',
+    hostel: '',
+    bio: '',
+    githubUsername: '',
+    linkedinUsername: '',
+  });
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -22,7 +32,17 @@ const Profile = () => {
         const docRef = doc(db, 'users', id);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          setProfile({ id: docSnap.id, ...docSnap.data() });
+          const profileData = { id: docSnap.id, ...docSnap.data() };
+          setProfile(profileData);
+          setEditForm({
+            displayName: profileData.displayName || '',
+            major: profileData.major || '',
+            year: profileData.year || '',
+            hostel: profileData.hostel || '',
+            bio: profileData.bio || '',
+            githubUsername: profileData.githubUsername || '',
+            linkedinUsername: profileData.linkedinUsername || '',
+          });
         } else {
           toast.error("Profile not found.");
         }
@@ -51,6 +71,78 @@ const Profile = () => {
 
     fetchProfile();
   }, [id]);
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const userRef = doc(db, 'users', id);
+      await updateDoc(userRef, editForm);
+      setProfile({ ...profile, ...editForm });
+      setIsEditing(false);
+      toast.success("Profile updated successfully!");
+    } catch (error) {
+      toast.error("Error updating profile.");
+      console.error("Error updating profile:", error);
+    }
+  };
+
+  const EditModal = () => (
+    isEditing && (
+      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+        <div className="bg-gradient-to-br from-indigo-950 to-purple-900 rounded-2xl p-6 w-full max-w-md relative">
+          <button
+            onClick={() => setIsEditing(false)}
+            className="absolute top-4 right-4 text-white/60 hover:text-white"
+          >
+            <X className="w-6 h-6" />
+          </button>
+          
+          <h2 className="text-2xl font-bold text-white mb-6">Edit Profile</h2>
+          
+          <form onSubmit={handleEditSubmit} className="space-y-4">
+            {Object.entries(editForm).map(([key, value]) => (
+              <div key={key}>
+                <label className="block text-white/80 mb-1 capitalize">
+                  {key.replace(/([A-Z])/g, ' $1').trim()}
+                </label>
+                {key === 'bio' ? (
+                  <textarea
+                    value={value}
+                    onChange={(e) => setEditForm({ ...editForm, [key]: e.target.value })}
+                    className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white focus:outline-none focus:border-white/40"
+                    rows={4}
+                  />
+                ) : (
+                  <input
+                    type="text"
+                    value={value}
+                    onChange={(e) => setEditForm({ ...editForm, [key]: e.target.value })}
+                    className="w-full px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white focus:outline-none focus:border-white/40"
+                  />
+                )}
+              </div>
+            ))}
+            
+            <div className="flex justify-end gap-4 pt-4">
+              <button
+                type="button"
+                onClick={() => setIsEditing(false)}
+                className="px-4 py-2 rounded-lg border border-white/20 text-white hover:bg-white/10 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+              >
+                Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    )
+  );
 
   const SocialButton = ({ icon, label, link, color }) => (
     <motion.a
@@ -88,8 +180,18 @@ const Profile = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="backdrop-blur-lg bg-white/10 rounded-2xl shadow-2xl border border-white/20 p-8 mb-8"
+          className="backdrop-blur-lg bg-white/10 rounded-2xl shadow-2xl border border-white/20 p-8 mb-8 relative"
         >
+          {currentUser && currentUser.uid === id && (
+            <button
+              onClick={() => setIsEditing(true)}
+              className="absolute top-4 right-4 px-4 py-2 rounded-lg border border-white/20 text-white hover:bg-white/10 transition-colors flex items-center gap-2"
+            >
+              <Edit2 className="w-4 h-4" />
+              Edit Profile
+            </button>
+          )}
+          
           <div className="flex flex-col md:flex-row gap-8">
             <div className="flex-shrink-0">
               <motion.div
@@ -204,6 +306,7 @@ const Profile = () => {
           </motion.div>
         </div>
       </div>
+      <EditModal />
     </div>
   );
 };
