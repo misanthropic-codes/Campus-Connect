@@ -1,54 +1,86 @@
-Project Name: TaskBoard
+# Campus Taskboard
 
-Description: TaskBoard is a web application designed to help users manage and organize their tasks and projects. The application allows users to create, edit, and delete tasks, as well as assign tasks to other users.
+Campus Taskboard is a collaborative task management platform built using React and Firebase. Designed for campus communities, it allows users to post, accept, and manage tasks with real-time updates, secure authentication, and a modern, responsive design.
 
-Features:
+## Tech Stack
+- **React**: Frontend library for building the UI
+- **Firebase**: 
+  - Firestore for real-time data management
+  - Firebase Authentication for secure login/signup
+- **Tailwind CSS**: Styling for responsive and modern design
+- **Framer Motion**: Animations for a smooth user experience
 
-User authentication and authorization
-Task creation and management
-Task posting and collaboration
-Real-time updates 
-Responsive design for mobile and desktop devices
-Technologies Used:
+---
 
-React.js for the front-end
-Firebase for the back-end and database
-CSS and HTML for styling and layout
-JavaScript for scripting and functionality
-Getting Started:
+## Features
+- **User Authentication**: Secure login and signup using Firebase Authentication.
+- **Real-Time Task Management**: Task posting, acceptance, and updates in real time using Firestore.
+- **User Profiles**: Detailed profiles displaying users’ posted and completed tasks.
+- **Responsive Design**: Tailored for all devices using Tailwind CSS.
+- **Animations**: Framer Motion for smooth and engaging animations.
 
-Clone the repository to your local machine using git clone https://github.com/your-username/taskboard.git
-Install the required dependencies using npm install
-Start the application using npm start
+---
 
-Contributing:
+## Getting Started
 
-If you'd like to contribute to the project, please fork the repository and submit a pull request with your changes. Please make sure to follow the project's coding standards and guidelines.
+### Prerequisites
+- Node.js and npm installed on your machine
+- Firebase project set up with Firestore and Authentication
 
-License:
+### Installation
 
-TaskBoard is licensed under the MIT License.
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/yourusername/Campus-Taskboard.git
+   cd Campus-Taskboard
 
-Acknowledgments:
+2. Install dependencies:
+Install dependencies:
 
-Firebase for providing the back-end and database services
-React.js for providing the front-end framework
-Tailwind CSS for providing the styling and layout
-Authors:
+3.Set up Firebase:
 
-Abhishek Kumar
-Version History:
+Go to the Firebase Console and create a new project.
+Enable Firestore Database and Authentication (Email/Password sign-in).
+Create a web app in Firebase, and obtain your Firebase config object.
 
-v1.0.0: Initial release
-v1.1.0: Added task assignment and collaboration features
-v1.2.0: Improved real-time updates and notifications
-Known Issues:
+4. Setup Enviroment Variable
+In the root of this project, create a .env file and add the following environment variables:
 
-#deSIGN CONFLICTS
+VITE_FIREBASE_API_KEY=your_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+
+Replace your_* with the values from your Firebase project.
+
+5. Start the development server:
+npm run dev
+
+The app should now be running on http://localhost:300
+
+Available Scripts
+npm run dev: Runs the app in development mode on http://localhost:3000.
+npm run build: Builds the app for production in the dist folder.
+npm run lint: Lints the codebase for consistency.
+
+Environment Variables
+The project requires environment variables to be stored in a .env file at the root level for Firebase configuration. The necessary variables are:
+
+VITE_FIREBASE_API_KEY=your_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
 
 
-Future Development:
+Contributing
+If you’d like to contribute to Campus Taskboard, please fork the repository and create a pull request. All contributions are welcome!
 
-Implementing additional features such as task prioritization and due dates
-Improving the user interface and user experience
-Adding support for multiple languages and time zones
+License
+This project is licensed under the MIT License. See the LICENSE file for details.
+
+
+
