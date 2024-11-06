@@ -6,7 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { motion } from 'framer-motion';
-import { Clock, MapPin, AlertTriangle, Send, User } from 'lucide-react';
+import { Clock, MapPin, AlertTriangle, Send, User, CheckCircle } from 'lucide-react';
 
 const TaskDetails = () => {
   const { id } = useParams();
@@ -17,6 +17,7 @@ const TaskDetails = () => {
   const [newMessage, setNewMessage] = useState('');
   const [poster, setPoster] = useState(null);
   const [claimant, setClaimant] = useState(null);
+  const [isCompleting, setIsCompleting] = useState(false);
 
   useEffect(() => {
     const fetchTask = async () => {
@@ -77,6 +78,9 @@ const TaskDetails = () => {
   };
 
   const handleMarkComplete = async () => {
+    if (isCompleting || task.status === 'completed') return;
+    
+    setIsCompleting(true);
     try {
       const taskRef = doc(db, 'tasks', id);
       await updateDoc(taskRef, {
@@ -92,9 +96,12 @@ const TaskDetails = () => {
         tasksCompleted: (helperSnap.data().tasksCompleted || 0) + 1
       });
 
+      setTask(prev => ({ ...prev, status: 'completed' }));
       toast.success("Task marked as complete!");
     } catch (error) {
       toast.error("Failed to complete task. Please try again.");
+    } finally {
+      setIsCompleting(false);
     }
   };
 
@@ -118,6 +125,30 @@ const TaskDetails = () => {
 
   const navigateToProfile = (userId) => {
     navigate(`/profile/${userId}`);
+  };
+
+  const TaskStatusBadge = () => {
+    if (!claimant) return null;
+    
+    return (
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-slate-700/30 p-4 rounded-lg mb-4 sm:mb-6"
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-blue-500/30 rounded-full flex items-center justify-center">
+            <User className="w-5 h-5 text-blue-300" />
+          </div>
+          <div>
+            <p className="text-blue-300 font-medium">{claimant.displayName}</p>
+            <p className="text-sm text-gray-400">
+              {task.status === 'completed' ? 'Completed this task' : 'Currently working on this task'}
+            </p>
+          </div>
+        </div>
+      </motion.div>
+    );
   };
 
   if (!task) return (
@@ -181,6 +212,8 @@ const TaskDetails = () => {
             </motion.div>
           )}
 
+          {task.claimedBy && <TaskStatusBadge />}
+
           {task.status === 'open' && currentUser.uid !== task.createdBy && (
             <motion.div 
               initial={{ opacity: 0, y: 10 }}
@@ -203,15 +236,33 @@ const TaskDetails = () => {
             </motion.div>
           )}
 
-          {task.status === 'accepted' && task.createdBy === currentUser.uid && (
+          {(task.status === 'accepted' || task.status === 'completed') && task.createdBy === currentUser.uid && (
             <motion.button
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
               onClick={handleMarkComplete}
-              className="w-full bg-green-600 hover:bg-green-700 text-white py-2 sm:py-3 rounded-lg transition-colors mb-4 sm:mb-6 text-sm sm:text-base"
+              disabled={task.status === 'completed' || isCompleting}
+              className={`w-full py-2 sm:py-3 rounded-lg transition-all duration-300 mb-4 sm:mb-6 text-sm sm:text-base flex items-center justify-center gap-2 ${
+                task.status === 'completed'
+                  ? 'bg-green-500 cursor-default'
+                  : isCompleting
+                  ? 'bg-blue-600 opacity-75 cursor-wait'
+                  : 'bg-blue-600 hover:bg-blue-700'
+              } text-white`}
+              whileHover={task.status !== 'completed' && !isCompleting ? { scale: 1.02 } : {}}
+              whileTap={task.status !== 'completed' && !isCompleting ? { scale: 0.98 } : {}}
             >
-              Mark as Complete
+              {task.status === 'completed' ? (
+                <>
+                  <CheckCircle className="w-4 h-4" />
+                  <span>Task Completed</span>
+                </>
+              ) : (
+                <>
+                  {isCompleting ? 'Completing...' : 'Mark as Complete'}
+                </>
+              )}
             </motion.button>
           )}
 
@@ -255,16 +306,16 @@ const TaskDetails = () => {
               <button
                 type="submit"
                 className="bg-blue-600 hover:bg-blue-700 text-white px-4 sm:px-6 rounded-lg flex items-center gap-2 transition-colors text-sm sm:text-base whitespace-nowrap"
-              >
-                <Send className="w-3 h-3 sm:w-4 sm:h-4" />
-                <span className="hidden sm:inline">Send</span>
-              </button>
-            </form>
+                >
+                  <Send className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="hidden sm:inline">Send</span>
+                </button>
+              </form>
+            </motion.div>
           </motion.div>
         </motion.div>
-      </motion.div>
-    </div>
-  );
-};
-
-export default TaskDetails;
+      </div>
+    );
+  };
+  
+  export default TaskDetails;
