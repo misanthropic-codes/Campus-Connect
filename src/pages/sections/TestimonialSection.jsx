@@ -54,22 +54,22 @@ const TestimonialSection = () => {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           <TestimonialCard
-            name="Sarah Johnson"
-            role="Computer Science Major"
+            name="Abhishek Kumar"
+            role="Electrical Engineering"
             content="Campus Taskboard has completely changed how our study group collaborates. The real-time updates and task tracking are game-changers!"
             rating={5}
             delay={0.2}
           />
           <TestimonialCard
-            name="Michael Chen"
-            role="Business Administration"
+            name="Atique Alam"
+            role="CSE- Data Science"
             content="The interface is intuitive and the features are exactly what we needed for managing group projects. Highly recommended!"
             rating={5}
             delay={0.4}
           />
           <TestimonialCard
-            name="Emily Rodriguez"
-            role="Engineering Student"
+            name="Tannu Kumari"
+            role="CSE-AI/ML"
             content="Finally, a platform that understands student collaboration. It's helped our engineering team stay organized and efficient."
             rating={5}
             delay={0.6}
