@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "site": "campus-connect-10xdevs",
+    
     "public": "public",
     "ignore": [
       "firebase.json",
