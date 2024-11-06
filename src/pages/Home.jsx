@@ -1,7 +1,8 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Star, ArrowRight, Users, Clock, Target, ChevronDown } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext'; // Adjust the import path as needed
 
 // Lazy load components that aren't immediately visible
 const TestimonialSection = lazy(() => import('./sections/TestimonialSection'));
@@ -37,7 +38,6 @@ const ScrollIndicator = React.memo(() => (
   </motion.div>
 ));
 
-// Create a loading fallback component
 const LoadingFallback = () => (
   <div className="w-full h-64 flex items-center justify-center">
     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
@@ -49,13 +49,29 @@ const Home = () => {
   const { scrollY } = useScroll();
   const backgroundY = useTransform(scrollY, [0, 500], ['0%', '50%']);
   const opacity = useTransform(scrollY, [0, 200], [1, 0]);
+  const navigate = useNavigate();
+  const { currentUser, loading } = useAuth();
 
-  // Preload images and heavy assets
+  const handleGetStarted = () => {
+    if (currentUser) {
+      navigate('/task-feed');
+    } else {
+      navigate('/login', { 
+        state: { 
+          from: '/',
+          message: 'Please log in to continue'
+        }
+      });
+    }
+  };
+
+  // Preload critical assets
   useEffect(() => {
     const preloadImages = () => {
-      // Add any background images or heavy assets here
       const images = [
-        // Add your image URLs here
+        // Add your critical image URLs here
+        // '/assets/hero-bg.webp',
+        // '/assets/features-bg.webp',
       ];
       images.forEach(image => {
         new Image().src = image;
@@ -63,6 +79,11 @@ const Home = () => {
     };
     preloadImages();
   }, []);
+
+  // Show loading state while auth is initializing
+  if (loading) {
+    return <LoadingFallback />;
+  }
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
@@ -95,17 +116,17 @@ const Home = () => {
               
               {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row gap-4">
-                <Link
-                  to="/signup"
+                <button
+                  onClick={handleGetStarted}
                   onMouseEnter={() => setIsHovered(true)}
                   onMouseLeave={() => setIsHovered(false)}
                   className="group relative px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center gap-2 font-medium overflow-hidden hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300"
                 >
                   <span className="relative z-10 flex items-center gap-2">
-                    Get Started Free
+                    {currentUser ? 'Go to Dashboard' : 'Get Started Free'}
                     <ArrowRight className="w-5 h-5" />
                   </span>
-                </Link>
+                </button>
                 <Link
                   to="/demo"
                   className="px-8 py-4 border border-gray-700 hover:border-blue-500 rounded-xl text-center transition-colors hover:bg-blue-500/10"
@@ -113,6 +134,31 @@ const Home = () => {
                   Watch Demo
                 </Link>
               </div>
+
+              {/* Trust Indicators */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.6 }}
+                className="mt-8 flex items-center gap-4 text-gray-400"
+              >
+                <div className="flex -space-x-2">
+                  {[...Array(4)].map((_, i) => (
+                    <div
+                      key={i}
+                      className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-400 to-purple-400 border-2 border-gray-900"
+                    />
+                  ))}
+                </div>
+                <div>
+                  <div className="flex items-center gap-1">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 fill-current text-yellow-400" />
+                    ))}
+                  </div>
+                  <span className="text-sm">Trusted by 1000+ students</span>
+                </div>
+              </motion.div>
             </motion.div>
 
             {/* Stats Grid */}
