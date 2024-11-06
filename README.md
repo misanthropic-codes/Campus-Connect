@@ -33,31 +33,15 @@ Campus Connect is a collaborative task management platform built using React and
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/yourusername/Campus-Taskboard.git
-   cd Campus-Taskboard
+   git clone https://github.com/misanthropic-codes/Campus-Connect.git
+   cd Campus-Connect
 
 2. Install dependencies:
-Install dependencies:
+Install dependencies: npm install
 
-3.Set up Firebase:
 
-Go to the Firebase Console and create a new project.
-Enable Firestore Database and Authentication (Email/Password sign-in).
-Create a web app in Firebase, and obtain your Firebase config object.
 
-4. Setup Enviroment Variable
-In the root of this project, create a .env file and add the following environment variables:
-
-VITE_FIREBASE_API_KEY=your_api_key
-VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
-VITE_FIREBASE_PROJECT_ID=your_project_id
-VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
-VITE_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
-VITE_FIREBASE_APP_ID=your_app_id
-
-Replace your_* with the values from your Firebase project.
-
-5. Start the development server:
+3. Start the development server:
 npm run dev
 
 The app should now be running on http://localhost:300
