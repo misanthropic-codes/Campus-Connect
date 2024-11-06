@@ -4,7 +4,67 @@ import { db } from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-toastify';
-import { X, ChevronDown, MapPin, AlertTriangle } from 'lucide-react';
+import { X, ChevronDown, MapPin, AlertTriangle, Zap, Filter, Clock } from 'lucide-react';
+
+
+const NetworkBackground = () => (
+  <div className="fixed inset-0 z-0">
+    <div className="absolute inset-0 backdrop-blur-[100px]" />
+    <div className="absolute inset-0 bg-gradient-to-b from-slate-900/80 via-slate-900/50 to-slate-900/80" />
+    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] opacity-[0.08]">
+      <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <linearGradient id="networkGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#9333ea" />
+            <stop offset="100%" stopColor="#3b82f6" />
+          </linearGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="0.5" result="coloredBlur"/>
+            <feMerge>
+              <feMergeNode in="coloredBlur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+        <g transform="translate(25, 25) scale(0.5)">
+          {/* Exact hexagon pattern with internal connections */}
+          <path d="M50,0 L100,25 L100,75 L50,100 L0,75 L0,25 Z" 
+                stroke="url(#networkGradient)" 
+                strokeWidth="0.5"
+                fill="none"
+                filter="url(#glow)" />
+          
+          {/* Internal connections */}
+          <path d="M50,0 L50,100 M0,25 L100,75 M100,25 L0,75 M50,0 L0,75 M50,0 L100,75 M0,25 L50,100 M100,25 L50,100" 
+                stroke="url(#networkGradient)" 
+                strokeWidth="0.5"
+                fill="none"
+                filter="url(#glow)" />
+          
+          {/* Nodes */}
+          {[
+            [50,0],   // Top
+            [100,25], // Top right
+            [100,75], // Bottom right
+            [50,100], // Bottom
+            [0,75],   // Bottom left
+            [0,25],   // Top left
+            [50,50]   // Center
+          ].map(([cx, cy]) => (
+            <circle 
+              key={`${cx}-${cy}`}
+              cx={cx} 
+              cy={cy} 
+              r="2" 
+              fill="url(#networkGradient)"
+              filter="url(#glow)"
+            />
+          ))}
+        </g>
+      </svg>
+    </div>
+  </div>
+);
 
 const TaskFeed = () => {
   const { currentUser } = useAuth();
@@ -75,6 +135,17 @@ const TaskFeed = () => {
     );
   });
 
+  const getUrgencyStyles = (urgency) => {
+    switch (urgency) {
+      case 'high':
+        return 'bg-red-500/10 text-red-400 border-red-500/20';
+      case 'medium':
+        return 'bg-amber-500/10 text-amber-400 border-amber-500/20';
+      default:
+        return 'bg-green-500/10 text-green-400 border-green-500/20';
+    }
+  };
+
   const CustomDropdown = ({ type, value, options, onChange }) => (
     <div className="relative">
       <motion.button
@@ -84,9 +155,10 @@ const TaskFeed = () => {
         }}
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
-        className="w-48 px-4 py-3 rounded-xl bg-gradient-to-br from-slate-800/30 to-slate-900/30 backdrop-blur-lg 
-                   border border-slate-700/50 flex items-center justify-between text-slate-200 
-                   hover:border-blue-500/50 transition-all duration-300"
+        className="w-48 px-4 py-3 rounded-2xl bg-slate-800/40 backdrop-blur-xl 
+                   border border-indigo-500/20 hover:border-indigo-500/40
+                   flex items-center justify-between text-slate-200 
+                   hover:bg-slate-800/60 transition-all duration-300"
       >
         <span className="flex items-center gap-2">
           {type === 'location' ? <MapPin size={16} /> : <AlertTriangle size={16} />}
@@ -107,8 +179,8 @@ const TaskFeed = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="absolute top-full mt-2 w-full rounded-xl bg-slate-800/95 backdrop-blur-lg 
-                     border border-slate-700/50 shadow-xl overflow-hidden z-50"
+            className="absolute top-full mt-2 w-full rounded-2xl bg-slate-800/95 backdrop-blur-xl 
+                     border border-indigo-500/20 shadow-xl overflow-hidden z-50"
           >
             {options.map((option) => (
               <motion.button
@@ -117,9 +189,9 @@ const TaskFeed = () => {
                   onChange(option.value);
                   setOpenFilter(null);
                 }}
-                whileHover={{ x: 4, backgroundColor: 'rgba(59, 130, 246, 0.1)' }}
+                whileHover={{ x: 4, backgroundColor: 'rgba(99, 102, 241, 0.1)' }}
                 className={`w-full px-4 py-3 text-left text-slate-200 flex items-center gap-2
-                          transition-colors ${value === option.value ? 'bg-blue-600/20' : ''}`}
+                          transition-colors ${value === option.value ? 'bg-indigo-600/20' : ''}`}
               >
                 {option.icon}
                 {option.label}
@@ -130,10 +202,11 @@ const TaskFeed = () => {
       </AnimatePresence>
     </div>
   );
-
   return (
-    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,theme(colors.slate.800/40),theme(colors.slate.900/60)_30%,theme(colors.slate.900)_50%)]">
-      <div className="container mx-auto px-4 py-12">
+    <div className="min-h-screen bg-slate-900 relative overflow-hidden">
+    <NetworkBackground />
+    <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm z-[1]" />
+    <div className="container mx-auto px-4 py-12 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -141,14 +214,18 @@ const TaskFeed = () => {
           className="space-y-8"
         >
           <div className="space-y-2">
-            <motion.h1 
+            <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-4xl lg:text-5xl font-bold text-white"
+              className="flex items-center gap-3"
             >
-              Task Feed
-            </motion.h1>
+              <h1 className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 text-transparent bg-clip-text">
+                Task Feed
+              </h1>
+              <div className="h-8 w-px bg-gradient-to-b from-indigo-500/0 via-indigo-500/40 to-indigo-500/0" />
+              <Zap className="text-indigo-400" size={24} />
+            </motion.div>
             <motion.p 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -203,24 +280,27 @@ const TaskFeed = () => {
                   transition={{ duration: 0.3, delay: index * 0.1 }}
                   whileHover={{ scale: 1.02, y: -4 }}
                   onClick={() => setSelectedTask(task)}
-                  className="group bg-gradient-to-br from-slate-800/30 to-slate-900/30 backdrop-blur-lg rounded-xl p-6 
-                           cursor-pointer border border-slate-700/50 hover:border-blue-500/50 
-                           shadow-lg transition-all duration-300"
+                  className="group bg-slate-800/40 backdrop-blur-xl rounded-2xl p-6 
+                           cursor-pointer border border-indigo-500/20 hover:border-indigo-500/40
+                           shadow-lg shadow-indigo-500/5 hover:shadow-indigo-500/10 
+                           transition-all duration-300"
                 >
-                  <h2 className="text-xl font-semibold mb-2 text-white group-hover:text-blue-400 transition-colors">
-                    {task.title}
-                  </h2>
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-xl font-semibold text-white group-hover:text-indigo-400 transition-colors">
+                      {task.title}
+                    </h2>
+                    <Clock size={16} className="text-slate-400" />
+                  </div>
                   <p className="text-slate-400 mb-4 line-clamp-2">{task.description}</p>
                   
                   <div className="flex gap-2">
-                    <span className="bg-slate-700/30 px-3 py-1.5 rounded-lg text-sm text-slate-300 flex items-center gap-1">
+                    <span className="bg-slate-700/30 px-3 py-1.5 rounded-xl text-sm text-slate-300 
+                                  border border-slate-600/30 flex items-center gap-1">
                       <MapPin size={12} />
                       {task.location}
                     </span>
-                    <span className={`px-3 py-1.5 rounded-lg text-sm flex items-center gap-1
-                      ${task.urgency === 'high' ? 'bg-red-500/20 text-red-300' :
-                        task.urgency === 'medium' ? 'bg-yellow-500/20 text-yellow-300' :
-                        'bg-green-500/20 text-green-300'}`}
+                    <span className={`px-3 py-1.5 rounded-xl text-sm flex items-center gap-1 border
+                      ${getUrgencyStyles(task.urgency)}`}
                     >
                       <AlertTriangle size={12} />
                       {task.urgency.charAt(0).toUpperCase() + task.urgency.slice(1)}
@@ -237,7 +317,7 @@ const TaskFeed = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 z-50"
+                className="fixed inset-0 bg-slate-900/80 backdrop-blur-md flex items-center justify-center p-4 z-50"
                 onClick={() => setSelectedTask(null)}
               >
                 <motion.div
@@ -245,32 +325,35 @@ const TaskFeed = () => {
                   animate={{ scale: 1, y: 0 }}
                   exit={{ scale: 0.9, y: 20 }}
                   onClick={e => e.stopPropagation()}
-                  className="bg-gradient-to-br from-slate-800/95 to-slate-900/95 backdrop-blur-lg rounded-2xl p-8 
-                           max-w-2xl w-full border border-slate-700/50 text-white shadow-2xl"
+                  className="bg-slate-800/90 backdrop-blur-xl rounded-2xl p-8 
+                           max-w-2xl w-full border border-indigo-500/20 text-white 
+                           shadow-2xl shadow-indigo-500/10"
                 >
                   <div className="relative">
                     <motion.button
                       whileHover={{ scale: 1.1, rotate: 90 }}
                       whileTap={{ scale: 0.9 }}
                       onClick={() => setSelectedTask(null)}
-                      className="absolute -top-2 -right-2 p-2 rounded-full bg-slate-800 text-slate-400 
-                               hover:text-white hover:bg-slate-700 transition-colors"
+                      className="absolute -top-2 -right-2 p-2 rounded-full bg-slate-700/50 text-slate-400 
+                               hover:text-white hover:bg-slate-600/50 transition-colors"
                     >
                       <X size={20} />
                     </motion.button>
 
-                    <h2 className="text-2xl font-bold mb-4">{selectedTask.title}</h2>
+                    <h2 className="text-2xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-indigo-400 
+                                 text-transparent bg-clip-text">
+                      {selectedTask.title}
+                    </h2>
                     <p className="text-slate-300 mb-6 leading-relaxed">{selectedTask.description}</p>
 
                     <div className="flex gap-3 mb-8">
-                      <span className="bg-slate-800/50 px-4 py-2 rounded-lg text-slate-300 flex items-center gap-2">
+                      <span className="bg-slate-700/30 px-4 py-2 rounded-xl text-slate-300 
+                                    border border-slate-600/30 flex items-center gap-2">
                         <MapPin size={16} />
                         {selectedTask.location}
                       </span>
-                      <span className={`px-4 py-2 rounded-lg flex items-center gap-2
-                        ${selectedTask.urgency === 'high' ? 'bg-red-500/20 text-red-300' :
-                          selectedTask.urgency === 'medium' ? 'bg-yellow-500/20 text-yellow-300' :
-                          'bg-green-500/20 text-green-300'}`}
+                      <span className={`px-4 py-2 rounded-xl flex items-center gap-2 border
+                        ${getUrgencyStyles(selectedTask.urgency)}`}
                       >
                         <AlertTriangle size={16} />
                         {selectedTask.urgency.charAt(0).toUpperCase() + selectedTask.urgency.slice(1)} Priority
@@ -282,9 +365,9 @@ const TaskFeed = () => {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => handleAcceptTask(selectedTask.id)}
-                        className="flex-1 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 
-                                 hover:to-blue-400 py-3 rounded-xl font-medium transition-all duration-300
-                                 shadow-lg shadow-blue-500/20"
+                        className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 
+                                 hover:to-indigo-500 py-3 rounded-xl font-medium transition-all duration-300
+                                 shadow-lg shadow-indigo-500/20"
                       >
                         Accept Task
                       </motion.button>
@@ -293,7 +376,8 @@ const TaskFeed = () => {
                         whileTap={{ scale: 0.98 }}
                         onClick={() => handleRejectTask(selectedTask.id)}
                         className="flex-1 bg-slate-700/50 hover:bg-slate-600/50 py-3 rounded-xl font-medium
-                                 transition-colors border border-slate-600/50 hover:border-slate-500/50"
+                                 transition-colors border border-slate-600/50 hover:border-slate-500/50
+                                 backdrop-blur-xl"
                       >
                         Reject Task
                       </motion.button>
@@ -309,9 +393,14 @@ const TaskFeed = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6 }}
-              className="text-center py-12"
+              className="text-center py-16"
             >
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full 
+                            bg-indigo-500/10 border border-indigo-500/20 mb-4">
+                <Filter size={24} className="text-indigo-400" />
+              </div>
               <p className="text-slate-400 text-lg">No tasks available at the moment.</p>
+              <p className="text-slate-500 mt-2">Check back later or adjust your filters</p>
             </motion.div>
           )}
         </motion.div>
