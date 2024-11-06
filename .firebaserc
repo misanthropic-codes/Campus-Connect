@@ -1,5 +1,7 @@
 {
   "projects": {
     "default": "c-taskboard"
-  }
+  },
+  "targets": {},
+  "etags": {}
 }

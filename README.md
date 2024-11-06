@@ -1,6 +1,6 @@
 # Campus Connect
 
-This Project is hosted on - https://c-taskboard.web.app/
+This Project is hosted on - https://c-taskboard.web.app/ (Not updated to latest Release yet To run the bug FREE App do local installation)
 
 Campus Connect is a collaborative task management platform built using React and Firebase. Designed for campus communities, it allows users to post, accept, and manage tasks with real-time updates, secure authentication, and a modern, responsive design.
 
