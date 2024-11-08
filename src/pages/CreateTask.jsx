@@ -10,7 +10,7 @@ import { Map, FileText, AlignLeft, Clock, Plus, X } from 'lucide-react';
 // Memoized option data
 const LOCATIONS = [
   "Library",
-  "Student Center",
+  "Student Center", 
   "Cafeteria",
   "Dormitory",
   "Sports Complex",
@@ -34,20 +34,20 @@ const FormLabel = ({ icon: Icon, children }) => (
 const FormInput = ({ error, ...props }) => (
   <input
     {...props}
-    className={`w-full px-4 py-3 bg-[#0A1F33]/50 backdrop-blur-sm border 
-    ${error ? 'border-red-500' : 'border-[#1E3A5F]'}
+    className={`w-full px-4 py-3 bg-white/5 backdrop-blur-sm border 
+    ${error ? 'border-red-500' : 'border-white/10'}
     rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400/30
-    text-white placeholder-blue-200/30 transition-all duration-300`}
+    text-white placeholder-white/50 transition-all duration-300`}
   />
 );
 
 const FormTextArea = ({ error, ...props }) => (
   <textarea
     {...props}
-    className={`w-full px-4 py-3 bg-[#0A1F33]/50 backdrop-blur-sm border 
-    ${error ? 'border-red-500' : 'border-[#1E3A5F]'}
+    className={`w-full px-4 py-3 bg-white/5 backdrop-blur-sm border 
+    ${error ? 'border-red-500' : 'border-white/10'}
     rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400/30
-    text-white placeholder-blue-200/30 transition-all duration-300 min-h-[120px]`}
+    text-white placeholder-white/50 transition-all duration-300 min-h-[120px]`}
   />
 );
 
@@ -63,7 +63,7 @@ const Dropdown = ({ isOpen, onClose, children }) => (
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -10 }}
         transition={{ duration: 0.2 }}
-        className="absolute w-full mt-2 py-1 bg-[#0A1F33]/95 backdrop-blur-xl border border-[#1E3A5F] rounded-lg shadow-lg z-50"
+        className="absolute w-full mt-2 py-1 bg-gray-800/90 backdrop-blur-xl border border-white/20 rounded-lg shadow-lg z-50"
       >
         {children}
       </motion.div>
@@ -128,13 +128,13 @@ const CreateTask = () => {
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="min-h-screen bg-gradient-to-br from-[#0B1829] via-[#0A1F33] to-[#0B1829] text-white flex items-center justify-center p-6"
+      className="min-h-screen bg-gradient-to-br from-indigo-950 via-indigo-950 to-purple-900 text-white flex items-center justify-center p-6"
     >
       <motion.div 
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-3xl backdrop-blur-xl bg-[#0A1F33]/30 p-8 rounded-2xl border border-[#1E3A5F] shadow-2xl"
+        className="w-full max-w-3xl backdrop-blur-lg bg-white/10 p-8 rounded-2xl border border-white/20 shadow-2xl"
       >
         <motion.div 
           initial={{ y: -20, opacity: 0 }}
@@ -178,15 +178,15 @@ const CreateTask = () => {
             <FormLabel icon={Map}>Location</FormLabel>
             <button
               type="button"
-              className={`w-full px-4 py-3 bg-[#0A1F33]/50 backdrop-blur-sm border
-                ${errors.location ? 'border-red-500' : 'border-[#1E3A5F]'}
-                rounded-lg hover:bg-[#1E3A5F]/30 transition-all duration-300 flex items-center justify-between`}
+              className={`w-full px-4 py-3 bg-white/5 backdrop-blur-sm border
+                ${errors.location ? 'border-red-500' : 'border-white/10'}
+                rounded-lg hover:bg-white/10 transition-all duration-300 flex items-center justify-between`}
               onClick={() => {
                 setIsLocationOpen(!isLocationOpen);
                 setIsUrgencyOpen(false);
               }}
             >
-              <span className={formData.location ? 'text-white' : 'text-blue-200/30'}>
+              <span className={formData.location ? 'text-white' : 'text-blue-200/50'}>
                 {formData.location || 'Select location'}
               </span>
               <motion.span
@@ -203,7 +203,7 @@ const CreateTask = () => {
                 <motion.button
                   key={location}
                   type="button"
-                  className="w-full px-4 py-2 text-left text-sm hover:bg-[#1E3A5F]/50 transition-colors flex items-center gap-2"
+                  className="w-full px-4 py-2 text-left text-sm hover:bg-white/10 transition-colors flex items-center gap-2"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.05 }}
@@ -223,15 +223,15 @@ const CreateTask = () => {
             <FormLabel icon={Clock}>Urgency</FormLabel>
             <button
               type="button"
-              className={`w-full px-4 py-3 bg-[#0A1F33]/50 backdrop-blur-sm border
-                ${errors.urgency ? 'border-red-500' : 'border-[#1E3A5F]'}
-                rounded-lg hover:bg-[#1E3A5F]/30 transition-all duration-300 flex items-center justify-between`}
+              className={`w-full px-4 py-3 bg-white/5 backdrop-blur-sm border
+                ${errors.urgency ? 'border-red-500' : 'border-white/10'}
+                rounded-lg hover:bg-white/10 transition-all duration-300 flex items-center justify-between`}
               onClick={() => {
                 setIsUrgencyOpen(!isUrgencyOpen);
                 setIsLocationOpen(false);
               }}
             >
-              <span className={formData.urgency ? 'text-white' : 'text-blue-200/30'}>
+              <span className={formData.urgency ? 'text-white' : 'text-blue-200/50'}>
                 {formData.urgency ? 
                   URGENCY_LEVELS.find(u => u.value === formData.urgency)?.label : 
                   'Select urgency'
@@ -251,7 +251,7 @@ const CreateTask = () => {
                 <motion.button
                   key={level.value}
                   type="button"
-                  className="w-full px-4 py-2 text-left text-sm hover:bg-[#1E3A5F]/50 transition-colors flex items-center gap-2"
+                  className="w-full px-4 py-2 text-left text-sm hover:bg-white/10 transition-colors flex items-center gap-2"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.05 }}
@@ -271,8 +271,8 @@ const CreateTask = () => {
             type="submit"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="w-full bg-gradient-to-r from-blue-600 to-blue-400 text-white py-3 px-4 rounded-lg
-                     transition-all duration-300 flex items-center justify-center gap-2 hover:opacity-90
+            className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-3 px-4 rounded-lg
+                     transition-all duration-300 flex items-center justify-center gap-2 hover:from-blue-600 hover:to-purple-600
                      shadow-lg shadow-blue-500/20 mt-8"
           >
             <Plus className="w-5 h-5" />
