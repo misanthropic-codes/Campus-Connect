@@ -2,8 +2,7 @@
 
 Campus Connect is a collaborative task management platform built using React and Firebase. Designed for campus communities, it allows users to post, accept, and manage tasks with real-time updates, secure authentication, and a modern, responsive design.
 
-Live & Deployed in - : https://campus-connect-one.vercel.app/ (Pages Unstable On refresh)
-Deployment -2 - : https://campus-connect-10xdev.netlify.app/ (Pages Unstable on Refreh)
+
 
 This Project is hosted on - https://c-taskboard.web.app/ (Most Stable Version)
 
