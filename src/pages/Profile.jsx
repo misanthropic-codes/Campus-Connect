@@ -73,13 +73,13 @@ const Profile = () => {
       <motion.div
         animate={{ rotate: 360 }}
         transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-        className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full"
+        className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full"
       />
     </div>
   );
 
   if (!profile) return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-950 to-purple-900 flex items-center justify-center text-white">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-950 to-purple-900 flex items-center justify-center text-white text-xl">
       Profile not found.
     </div>
   );
@@ -87,15 +87,38 @@ const Profile = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-950 to-purple-900 py-12 px-4">
       <div className="container mx-auto max-w-6xl">
-        <ProfileHeader profile={profile} currentUser={currentUser} id={id} setIsEditing={setIsEditing} />
-        <TaskList tasks={tasks} completedTasks={completedTasks} />
+        <ProfileHeader 
+          profile={profile} 
+          currentUser={currentUser} 
+          id={id} 
+          setIsEditing={setIsEditing}
+          iconSize={50}  // Increased header icon size to 40
+        />
+        
+        <div className="mt-8">
+          <TaskList 
+            tasks={tasks} 
+            completedTasks={completedTasks}
+            iconSize={28}  // Kept original size for TaskList
+          />
+        </div>
+
         <AnimatePresence>
           {isEditing && (
-            <EditModal
-              profile={profile}
-              handleEditSubmit={handleEditSubmit}
-              setIsEditing={setIsEditing}
-            />
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50"
+            >
+              <EditModal
+                profile={profile}
+                handleEditSubmit={handleEditSubmit}
+                setIsEditing={setIsEditing}
+                iconSize={28}  // Kept original size for EditModal
+              />
+            </motion.div>
           )}
         </AnimatePresence>
       </div>
