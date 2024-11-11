@@ -18,6 +18,7 @@ const TaskDetails = () => {
   const [poster, setPoster] = useState(null);
   const [claimant, setClaimant] = useState(null);
   const [isCompleting, setIsCompleting] = useState(false);
+  const [isAccepted, setIsAccepted] = useState(false);
 
   useEffect(() => {
     const fetchTask = async () => {
@@ -58,6 +59,7 @@ const TaskDetails = () => {
         claimedBy: currentUser.uid,
         status: 'accepted'
       });
+      setIsAccepted(true);
       toast.success("Task accepted successfully!");
     } catch (error) {
       toast.error("Failed to accept task. Please try again.");
@@ -72,6 +74,7 @@ const TaskDetails = () => {
         status: 'open'
       });
       toast.info("Task rejected.");
+      navigate('/task-feed');  // Redirects to task feed after rejection
     } catch (error) {
       toast.error("Failed to reject task. Please try again.");
     }
@@ -223,9 +226,14 @@ const TaskDetails = () => {
             >
               <button
                 onClick={handleAcceptTask}
-                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 sm:py-3 rounded-lg transition-colors text-sm sm:text-base"
+                disabled={isAccepted}
+                className={`flex-1 py-2 sm:py-3 rounded-lg transition-all duration-300 text-sm sm:text-base ${
+                  isAccepted
+                    ? 'bg-green-500 text-white cursor-default'
+                    : 'bg-blue-600 hover:bg-blue-700 text-white'
+                }`}
               >
-                Accept Task
+                {isAccepted ? 'Task Accepted' : 'Accept Task'}
               </button>
               <button
                 onClick={handleRejectTask}
