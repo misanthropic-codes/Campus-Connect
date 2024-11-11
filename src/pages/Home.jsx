@@ -1,22 +1,37 @@
-import React, { useState, useEffect, lazy, Suspense } from 'react';
+import React, { useState, lazy, Suspense } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { Star, ArrowRight, Users, Clock, Target, ChevronDown } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext'; // Adjust the import path as needed
+import { Star, ArrowRight, ChevronDown } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
-// Lazy load components that aren't immediately visible
-const TestimonialSection = lazy(() => import('./sections/TestimonialSection'));
+// Initial loading state component
+const InitialLoader = () => (
+  <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+    <div className="flex flex-col items-center gap-4">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      <div className="text-blue-400 font-medium">Loading Campus Connect...</div>
+    </div>
+  </div>
+);
+
+// Lazy load all non-critical components with prefetch
+const TestimonialSection = lazy(() => {
+  const component = import('./sections/TestimonialSection');
+  // Prefetch other sections when TestimonialSection is loaded
+  import('./sections/FeaturesSection');
+  import('./sections/GettingStartedSection');
+  return component;
+});
 const FeaturesSection = lazy(() => import('./sections/FeaturesSection'));
 const GettingStartedSection = lazy(() => import('./sections/GettingStartedSection'));
 
-// Memoize static components
+// Optimized StatCard with reduced motion
 const StatCard = React.memo(({ value, label, delay }) => (
   <motion.div 
-    initial={{ opacity: 0, y: 20 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.6, delay }}
+    initial={{ opacity: 0 }}
+    whileInView={{ opacity: 1 }}
+    transition={{ duration: 0.4, delay }}
     viewport={{ once: true }}
-    whileHover={{ scale: 1.05, y: -5 }}
     className="flex flex-col items-center bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-lg rounded-xl p-6 border border-white/10 hover:border-blue-500/50 transition-all duration-300 shadow-lg hover:shadow-blue-500/20"
   >
     <span className="text-3xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
@@ -26,23 +41,18 @@ const StatCard = React.memo(({ value, label, delay }) => (
   </motion.div>
 ));
 
+// Optimized ScrollIndicator with reduced animation complexity
 const ScrollIndicator = React.memo(() => (
   <motion.div
-    initial={{ opacity: 0, y: 0 }}
-    animate={{ opacity: 1, y: [0, 10, 0] }}
-    transition={{ duration: 1.5, repeat: Infinity }}
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ duration: 1 }}
     className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-2"
   >
     <span className="text-sm text-gray-400">Scroll to explore</span>
     <ChevronDown className="w-6 h-6 text-blue-400" />
   </motion.div>
 ));
-
-const LoadingFallback = () => (
-  <div className="w-full h-64 flex items-center justify-center">
-    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-  </div>
-);
 
 const Home = () => {
   const [isHovered, setIsHovered] = useState(false);
@@ -52,42 +62,47 @@ const Home = () => {
   const navigate = useNavigate();
   const { currentUser, loading } = useAuth();
 
+  // Critical preloading of assets
+  React.useEffect(() => {
+    // Preload critical images
+    const criticalImages = [
+      '/assets/hero-bg.webp',
+      '/assets/logo.webp'
+    ];
+    
+    criticalImages.forEach(src => {
+      const img = new Image();
+      img.src = src;
+    });
+
+    // Prefetch critical routes
+    const prefetchRoutes = ['/task-feed', '/login'];
+    prefetchRoutes.forEach(route => {
+      const link = document.createElement('link');
+      link.rel = 'prefetch';
+      link.href = route;
+      document.head.appendChild(link);
+    });
+  }, []);
+
   const handleGetStarted = () => {
     if (currentUser) {
       navigate('/task-feed');
     } else {
       navigate('/login', { 
-        state: { 
-          from: '/',
-          message: 'Please log in to continue'
-        }
+        state: { from: '/', message: 'Please log in to continue' }
       });
     }
   };
 
-  // Preload critical assets
-  useEffect(() => {
-    const preloadImages = () => {
-      const images = [
-        // Add your critical image URLs here
-        // '/assets/hero-bg.webp',
-        // '/assets/features-bg.webp',
-      ];
-      images.forEach(image => {
-        new Image().src = image;
-      });
-    };
-    preloadImages();
-  }, []);
-
-  // Show loading state while auth is initializing
+  // Show optimized loading state
   if (loading) {
-    return <LoadingFallback />;
+    return <InitialLoader />;
   }
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
-      {/* Hero Section */}
+      {/* Hero Section with optimized animations */}
       <section className="relative min-h-screen flex items-center">
         <motion.div 
           className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-purple-900/20 to-gray-900"
@@ -96,15 +111,16 @@ const Home = () => {
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Hero Content */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
+              transition={{ duration: 0.6 }}
             >
               <motion.h1 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
                 className="text-5xl lg:text-7xl font-bold mb-6"
               >
                 <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
@@ -139,7 +155,7 @@ const Home = () => {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 0.8, delay: 0.6 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
                 className="mt-8 flex items-center gap-4 text-gray-400"
               >
                 <div className="flex -space-x-2">
@@ -164,15 +180,15 @@ const Home = () => {
             {/* Stats Grid */}
             <div className="relative">
               <motion.div 
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
                 className="relative grid grid-cols-2 gap-4"
               >
-                <StatCard value="Task" label="Realtime Updates" delay={0.2} />
-                <StatCard value="Collaborate" label="Effectively" delay={0.4} />
-                <StatCard value="Build" label="Network" delay={0.6} />
-                <StatCard value="Showcase" label="Skills" delay={0.8} />
+                <StatCard value="Task" label="Realtime Updates" delay={0.1} />
+                <StatCard value="Collaborate" label="Effectively" delay={0.2} />
+                <StatCard value="Build" label="Network" delay={0.3} />
+                <StatCard value="Showcase" label="Skills" delay={0.4} />
               </motion.div>
             </div>
           </div>
@@ -182,8 +198,8 @@ const Home = () => {
         </motion.div>
       </section>
 
-      {/* Lazy loaded sections */}
-      <Suspense fallback={<LoadingFallback />}>
+      {/* Lazy loaded sections with loading fallback */}
+      <Suspense fallback={<InitialLoader />}>
         <FeaturesSection />
         <GettingStartedSection />
         <TestimonialSection />
@@ -193,7 +209,7 @@ const Home = () => {
       <footer className="border-t border-gray-800 py-12 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-gray-400">
           <p>&copy; {new Date().getFullYear()} Campus Connect. All rights reserved.</p>
-          <p> Built with ❤️ by team 10xDevs</p>
+          <p>Built with ❤️ by team 10xDevs</p>
           <div className="flex justify-center gap-4 mt-4">
             <Link to="/privacy" className="hover:text-white transition-colors">Privacy</Link>
             <Link to="/terms" className="hover:text-white transition-colors">Terms</Link>
