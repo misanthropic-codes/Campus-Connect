@@ -12,6 +12,8 @@ const Login = () => {
   const navigate = useNavigate();
   const [isSuccess, setIsSuccess] = useState(false);
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [isResetting, setIsResetting] = useState(false);
 
   const onSubmit = async (data) => {
     if (isSuccess) {
@@ -47,19 +49,38 @@ const Login = () => {
     }
   };
 
-  const handleResetPassword = useCallback(async (email) => {
+  const handleResetPassword = useCallback(async () => {
+    if (!resetEmail) {
+      toast.error("Please enter your email address", {
+        position: "top-center",
+      });
+      return;
+    }
+
+    setIsResetting(true);
     try {
-      // Implement password reset logic here
-      toast.info("Password reset link sent to your email", {
+      // Implement password reset logic here using resetEmail
+      // Example:
+      // await auth.sendPasswordResetEmail(resetEmail);
+      
+      toast.success("Password reset link sent to your email", {
         position: "top-center",
       });
       setIsResetModalOpen(false);
+      setResetEmail('');
     } catch (error) {
-      toast.error("Failed to send reset link", {
+      toast.error(error.message || "Failed to send reset link", {
         position: "top-center",
       });
+    } finally {
+      setIsResetting(false);
     }
-  }, []);
+  }, [resetEmail]);
+
+  const closeResetModal = () => {
+    setIsResetModalOpen(false);
+    setResetEmail('');
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-950 to-purple-900 py-12 px-4">
@@ -198,6 +219,8 @@ const Login = () => {
             <h2 className="text-2xl font-bold text-white mb-4">Reset Password</h2>
             <input
               type="email"
+              value={resetEmail}
+              onChange={(e) => setResetEmail(e.target.value)}
               placeholder="Enter your email"
               className="w-full p-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/50 focus:ring-2 focus:ring-blue-500 focus:border-transparent mb-4"
             />
@@ -205,16 +228,25 @@ const Login = () => {
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={() => handleResetPassword()}
-                className="flex-1 bg-blue-500 hover:bg-blue-600 text-white rounded-lg py-2 transition-colors"
+                onClick={handleResetPassword}
+                disabled={isResetting}
+                className="flex-1 bg-blue-500 hover:bg-blue-600 text-white rounded-lg py-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Send Reset Link
+                {isResetting ? (
+                  <span className="flex items-center justify-center">
+                    <Loader className="animate-spin mr-2" size={16} />
+                    Sending...
+                  </span>
+                ) : (
+                  "Send Reset Link"
+                )}
               </motion.button>
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={() => setIsResetModalOpen(false)}
-                className="flex-1 bg-white/10 hover:bg-white/20 text-white rounded-lg py-2 transition-colors"
+                onClick={closeResetModal}
+                disabled={isResetting}
+                className="flex-1 bg-white/10 hover:bg-white/20 text-white rounded-lg py-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Cancel
               </motion.button>
