@@ -37,7 +37,7 @@ User Profiles:
 Each user has a detailed profile displaying posted and accepted tasks, task completion history, and achievements.
 Reputation system with scores and badges to recognize contributions.
 
-###R esponsive Design:
+### Responsive Design:
 
 Designed with Tailwind CSS to ensure compatibility and seamless functionality across all device sizes.
 
