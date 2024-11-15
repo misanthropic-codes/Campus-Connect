@@ -10,21 +10,21 @@ To run the Project with all Features Working in Stable mode Follow The installat
 
 
 
-##Tech Stack
-###React: Frontend library for building the user interface with reusable components and state management.
+## Tech Stack
+### React: Frontend library for building the user interface with reusable components and state management.
 
-###Firebase:
+### Firebase:
 Firestore: Real-time data storage and synchronization, ensuring all users see the latest task updates instantly.
 
-###Firebase Authentication: Secure and streamlined user login and signup with support for role-based permissions.
+### Firebase Authentication: Secure and streamlined user login and signup with support for role-based permissions.
 
-###Tailwind CSS: Utility-first CSS framework for creating responsive, modern designs that look great on any device.
+### Tailwind CSS: Utility-first CSS framework for creating responsive, modern designs that look great on any device.
 
-###Framer Motion: Library for animations, adding smooth transitions and interactive effects to improve the user experience.
+### Framer Motion: Library for animations, adding smooth transitions and interactive effects to improve the user experience.
 
-##Features
+## Features
 
-###User Authentication:
+### User Authentication:
 
 Secure user login and registration using Firebase Authentication.
 Role-based access control to manage task posting and acceptance.
@@ -37,11 +37,11 @@ User Profiles:
 Each user has a detailed profile displaying posted and accepted tasks, task completion history, and achievements.
 Reputation system with scores and badges to recognize contributions.
 
-###Responsive Design:
+###R esponsive Design:
 
 Designed with Tailwind CSS to ensure compatibility and seamless functionality across all device sizes.
 
-###Animations:
+### Animations:
 
 Integrated animations with Framer Motion to provide a visually engaging and fluid user experience.
 
